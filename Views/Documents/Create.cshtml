@@ -1,0 +1,61 @@
+﻿@model WebQuanLyAppOnTap.Models.Document
+
+@{
+    ViewBag.Title = "Thêm mới tài liệu";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div>
+    <h2>Thêm mới tài liệu</h2>
+    <a href="@Url.Action("Index", "Documents")" class="add_posts">
+        <h5><img height="24" width="24" src="~/Content/images/back.png" /> Quay lại</h5>
+    </a>
+</div>
+<br />
+
+
+@using (Html.BeginForm("Create", "Documents", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.Label("Chọn môn học")
+        @Html.DropDownListFor(model => model.Subject_ID, (List<SelectListItem>)ViewBag.Subjects, new { @class = "form-control", id = "Subject_ID" })
+        @Html.ValidationMessageFor(model => model.Subject_ID, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Tên tài liệu")
+        @Html.EditorFor(model => model.NameDocument, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.NameDocument, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Tệp PDF")
+        <input type="file" name="file" id="file" />
+    </div>
+
+    <div style="color: red">
+        @ViewData["Error"]
+    </div>
+
+    <br />
+
+    <input type="submit" value="Thêm" class="btn btn-primary" />
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("form").submit(function (event) {
+            var fileInput = document.getElementById('file');
+            if (fileInput.files.length === 0) {
+                event.preventDefault(); // Ngăn form được gửi đi
+                alert('Hãy chọn tài liệu tải lên!'); // Hiển thị thông báo
+            }
+        });
+    });
+</script>

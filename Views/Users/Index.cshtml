@@ -1,0 +1,66 @@
+﻿@model List<WebQuanLyAppOnTap.Models.UserData>
+
+@{
+    ViewBag.Title = "Danh sách tài khoản";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    .table th, .table td {
+        text-align: center; /* Canh giữa nội dung */
+        vertical-align: middle; /* Canh giữa theo chiều dọc */
+        padding: 8px; /* Khoảng cách giữa nội dung và viền của cột */
+    }
+
+    .edit-link {
+        text-decoration: none;
+        color: blue;
+    }
+</style>
+
+<h2>Danh Sách Tài Khoản</h2>
+
+<br />
+
+<table class="table">
+    <tr style="background-color: aqua; text-align: center">
+        <th>
+            Username
+        </th>
+        <th>
+            Họ tên
+        </th>
+        <th>
+            Email
+        </th>
+        <th>
+            Loại tài khoản
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>
+                @user.Username
+            </td>
+            <td>
+                @user.FullName
+            </td>
+            <td>
+                @user.Email
+            </td>
+            <td>
+                @user.NameType
+            </td>
+            <td>
+                @if (Session["usertype_id"] != null && (int)Session["usertype_id"] == 1)
+                {
+                    <a class="edit-link" href="@Url.Action("EditUser", "Users", new { userId = user.Id })">Sửa User |</a>
+                    <a class="edit-link" href="@Url.Action("DeleteUser", "Users", new { userId = user.Id })"> Xóa User</a>
+                }
+            </td>
+        </tr>
+    }
+</table>
