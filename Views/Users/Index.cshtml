@@ -18,49 +18,51 @@
     }
 </style>
 
-<h2>Danh Sách Tài Khoản</h2>
+<section class="banner_main" style="margin-top: -50px;">
+    <h2 style="padding-top: 50px;">Danh Sách Tài Khoản</h2>
 
-<br />
+    <br />
 
-<table class="table">
-    <tr style="background-color: aqua; text-align: center">
-        <th>
-            Username
-        </th>
-        <th>
-            Họ tên
-        </th>
-        <th>
-            Email
-        </th>
-        <th>
-            Loại tài khoản
-        </th>
-        <th></th>
-    </tr>
-
-    @foreach (var user in Model)
-    {
-        <tr>
-            <td>
-                @user.Username
-            </td>
-            <td>
-                @user.FullName
-            </td>
-            <td>
-                @user.Email
-            </td>
-            <td>
-                @user.NameType
-            </td>
-            <td>
-                @if (Session["usertype_id"] != null && (int)Session["usertype_id"] == 1)
-                {
-                    <a class="edit-link" href="@Url.Action("EditUser", "Users", new { userId = user.Id })">Sửa User |</a>
-                    <a class="edit-link" href="@Url.Action("DeleteUser", "Users", new { userId = user.Id })"> Xóa User</a>
-                }
-            </td>
+    <table class="table">
+        <tr style="background-color: aqua; text-align: center">
+            <th>
+                Username
+            </th>
+            <th>
+                Họ tên
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Loại tài khoản
+            </th>
+            <th></th>
         </tr>
-    }
-</table>
+
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>
+                    @user.Username
+                </td>
+                <td>
+                    @user.FullName
+                </td>
+                <td>
+                    @user.Email
+                </td>
+                <td>
+                    @user.NameType
+                </td>
+                <td>
+                    @if (Session["usertype_id"] != null && (int)Session["usertype_id"] == 1)
+                    {
+                        <a class="edit-link" href="@Url.Action("EditUser", "Users", new { userId = user.Id })">Sửa User |</a>
+                        <a class="edit-link" href="@Url.Action("DeleteUser", "Users", new { userId = user.Id })"> Xóa User</a>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+</section>

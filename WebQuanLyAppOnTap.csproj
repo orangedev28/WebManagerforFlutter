@@ -115,6 +115,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="ConnectionMySQL.cs" />
     <Compile Include="Controllers\DocumentsController.cs" />
+    <Compile Include="Controllers\SubjectsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Global.asax.cs">
@@ -140,6 +141,10 @@
     <Content Include="Views\Documents\Create.cshtml" />
     <Content Include="Views\Users\EditUser.cshtml" />
     <Content Include="Views\Users\DeleteUser.cshtml" />
+    <Content Include="Views\Subjects\Index.cshtml" />
+    <Content Include="Views\Subjects\Create.cshtml" />
+    <Content Include="Views\Subjects\EditSubject.cshtml" />
+    <Content Include="Views\Subjects\DeleteSubject.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

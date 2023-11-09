@@ -1,0 +1,38 @@
+﻿@model WebQuanLyAppOnTap.Models.Subject
+
+@{
+    ViewBag.Title = "Thêm mới môn học";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+<section class="banner_main" style="margin-top: -50px;">
+    <div>
+        <h2 style="padding-top: 50px;">Thêm mới môn học</h2>
+        <a href="@Url.Action("Index", "Subjects")" class="add_posts">
+            <h5><img height="24" width="24" src="~/Content/images/back.png" /> Quay lại</h5>
+        </a>
+    </div>
+    <br />
+
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            @Html.Label("Tên môn học")
+            @Html.EditorFor(model => model.NameSubject, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.NameSubject, "", new { @class = "text-danger" })
+        </div>
+
+        <div style="color: red">
+            @ViewData["Error"]
+        </div>
+
+        <br />
+
+        <input type="submit" value="Thêm" class="btn btn-primary" />
+    }
+</section>
+

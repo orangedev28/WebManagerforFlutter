@@ -92,7 +92,7 @@ namespace WebQuanLyAppOnTap.Controllers
                     while (dataReader.Read())
                     {
                         Subject subject = new Subject();
-                        subject.ID = Convert.ToInt32(dataReader["id"]); // subject_id
+                        subject.Id = Convert.ToInt32(dataReader["id"]); // subject_id
                         subject.NameSubject = dataReader["namesubject"].ToString();
                         subjects.Add(subject);
                     }
@@ -122,14 +122,14 @@ namespace WebQuanLyAppOnTap.Controllers
                 // Chuyển danh sách môn học thành danh sách SelectListItem
                 List<SelectListItem> subjectListItems = subjects.Select(s => new SelectListItem
                 {
-                    Value = s.ID.ToString(), // s.Id là subject_id
+                    Value = s.Id.ToString(), // s.Id là subject_id
                     Text = s.NameSubject // s.Name là namesubject
                 }).ToList();
 
                 ViewBag.Subjects = subjectListItems; // Gửi danh sách môn học đến View
 
                 // Set the default selected value to the ID of the first subject
-                var defaultSubjectId = subjects.FirstOrDefault()?.ID; // Get the ID of the first subject
+                var defaultSubjectId = subjects.FirstOrDefault()?.Id; // Get the ID of the first subject
                 ViewBag.DefaultSubjectId = defaultSubjectId;
 
                 return View();
@@ -175,7 +175,7 @@ namespace WebQuanLyAppOnTap.Controllers
                         ViewBag.Subjects = GetSubjectsFromDatabase()
                             .Select(s => new SelectListItem
                             {
-                                Value = s.ID.ToString(),
+                                Value = s.Id.ToString(),
                                 Text = s.NameSubject
                             }).ToList();
                         return View(document);

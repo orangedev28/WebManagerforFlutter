@@ -1,7 +1,7 @@
-﻿@model List<WebQuanLyAppOnTap.Models.Document>
+﻿@model List<WebQuanLyAppOnTap.Models.Subject>
 
 @{
-    ViewBag.Title = "Danh sách tài liệu";
+    ViewBag.Title = "Danh sách môn học";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
@@ -11,10 +11,16 @@
         vertical-align: middle; /* Canh giữa theo chiều dọc */
         padding: 8px; /* Khoảng cách giữa nội dung và viền của cột */
     }
+
+    .edit-link {
+        text-decoration: none;
+        color: blue;
+    }
 </style>
 
 <section class="banner_main" style="margin-top: -50px;">
-    <h2 style="padding-top: 50px;">Danh Sách Tài Liệu</h2>
+
+    <h2 style="padding-top: 50px">Danh Sách Môn Học</h2>
 
     <br />
 
@@ -25,39 +31,23 @@
     <table class="table">
         <tr style="background-color: aqua; text-align: center">
             <th>
-                Tên tài liệu
-            </th>
-            <th>
-                Link tài liệu
-            </th>
-            <th>
-                Ngày đăng
-            </th>
-            <th>
                 Tên môn học
             </th>
             <th></th>
         </tr>
 
-        @foreach (var document in Model)
+        @foreach (var subject in Model)
         {
             <tr>
                 <td>
-                    @document.NameDocument
+                    @subject.NameSubject
                 </td>
                 <td>
-                    @document.LinkDocument
+                    <a class="edit-link" href="@Url.Action("EditSubject", "Subjects", new { subjectId = subject.Id })">Sửa Môn học |</a>
+                    <a class="edit-link" href="@Url.Action("DeleteSubject", "Subjects", new { subjectId = subject.Id })"> Xóa Môn học</a>
                 </td>
-                <td>
-                    @document.DateUpload
-                </td>
-                <td>
-                    @document.NameSubject
-                </td>
-                <td></td>
             </tr>
         }
     </table>
-
 </section>
 
