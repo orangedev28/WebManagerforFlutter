@@ -54,7 +54,10 @@
                 <td>
                     @document.NameSubject
                 </td>
-                <td></td>
+                <td>
+                    <a class="edit-link" href="@Url.Action("EditDocument", "Documents", new { documentId = document.Id })">Sửa Tài liệu |</a>
+                    <a class="edit-link" href="@Url.Action("DeleteDocument", "Documents", new { documentId = document.Id })"> Xóa Tài liệu</a>
+                </td>
             </tr>
         }
     </table>

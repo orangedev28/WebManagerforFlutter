@@ -28,6 +28,7 @@
     {
         using (Html.BeginForm("DeleteConfirmed", "Subjects", new { subjectId = Model.Id }))
         {
+            @Html.AntiForgeryToken()
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
                     <input type="submit" value="Xác nhận Xóa" class="btn" style="background-color: red; color: white;" />
@@ -45,7 +46,6 @@
     <div>
         @Html.ActionLink("Danh sách môn học", "Index")
     </div>
-
 
 </section>
 

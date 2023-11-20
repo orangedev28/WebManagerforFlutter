@@ -101,12 +101,11 @@ namespace WebQuanLyAppOnTap.Controllers
                     else
                     {
                         conn.Close();
-                        return View("Error"); // Hoặc chuyển hướng đến trang lỗi
+                        return View("Error");
                     }
                 }
                 catch (Exception ex)
                 {
-                    // Handle exceptions
                     return View("Error");
                 }
                 finally
@@ -117,7 +116,7 @@ namespace WebQuanLyAppOnTap.Controllers
 
         }
 
-        // Kiểm tra Username hợp lệ
+        // Kiểm tra Username hợp lệ ( chưa tồn tại trong db)
         private bool IsUsernameValid(string username, int userId)
         {
             ConnectionMySQL connection = new ConnectionMySQL();
@@ -152,6 +151,7 @@ namespace WebQuanLyAppOnTap.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult EditUser(UserData user)
         {
             if (Session["usertype_id"] != null && (int)Session["usertype_id"] == 1)
@@ -239,9 +239,6 @@ namespace WebQuanLyAppOnTap.Controllers
                     ViewBag.HasScore = false;
                 }
 
-                // Lấy thông tin người dùng từ CSDL dựa trên userId
-                // Sau đó truyền thông tin người dùng đó cho trang xác nhận xóa
-
                 ConnectionMySQL connection = new ConnectionMySQL();
                 string query = "SELECT u.id, u.username, u.fullname, u.email, t.nametype " +
                                "FROM users u " +
@@ -268,17 +265,16 @@ namespace WebQuanLyAppOnTap.Controllers
                         user.NameType = reader["nametype"].ToString();
 
                         conn.Close();
-                        return View(user); // Trả về view xác nhận xóa với thông tin của người dùng
+                        return View(user);
                     }
                     else
                     {
                         conn.Close();
-                        return View("Error"); // Hoặc chuyển hướng đến trang lỗi nếu không tìm thấy người dùng
+                        return View("Error");
                     }
                 }
                 catch (Exception ex)
                 {
-                    // Xử lý ngoại lệ
                     return View("Error");
                 }
                 finally
@@ -288,6 +284,7 @@ namespace WebQuanLyAppOnTap.Controllers
             }
         }
 
+        // Kiểm tra nếu người dùng đã được lưu điểm trong db thì không được phép xóa
         private bool CheckIfUserHasScore(int userId)
         {
             ConnectionMySQL connection = new ConnectionMySQL();
@@ -302,10 +299,11 @@ namespace WebQuanLyAppOnTap.Controllers
             int count = Convert.ToInt32(cmd.ExecuteScalar());
             conn.Close();
 
-            return count > 0; // Nếu count > 0, tồn tại điểm số cho người dùng
+            return count > 0;
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int userId)
         {
             if (Session["fullname"] == null)
@@ -334,7 +332,7 @@ namespace WebQuanLyAppOnTap.Controllers
                         }
                         else
                         {
-                            return View("Error"); // Xử lý lỗi khi không thể xóa người dùng
+                            return View("Error");
                         }
                     }
                     catch (Exception ex)
@@ -348,7 +346,6 @@ namespace WebQuanLyAppOnTap.Controllers
                 }
                 else
                 {
-                    // Nếu usertype_id không phải 1, không cho phép chỉnh sửa thông tin
                     ViewData["Error"] = "Không có quyền xóa User!";
                     return View("Error");
                 }
@@ -361,6 +358,7 @@ namespace WebQuanLyAppOnTap.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Login(string username, string password)
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))

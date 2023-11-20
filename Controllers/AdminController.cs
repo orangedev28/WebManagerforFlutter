@@ -17,14 +17,5 @@ namespace WebQuanLyAppOnTap.Controllers
             }
             return View();
         }
-
-        public ActionResult About()
-        {
-            if (Session["fullname"] == null)
-            {
-                return RedirectToAction("Login", "Users");
-            }
-            return View();
-        }
     }
 }

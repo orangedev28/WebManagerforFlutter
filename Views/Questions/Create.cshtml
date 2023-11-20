@@ -1,0 +1,73 @@
+﻿@model WebQuanLyAppOnTap.Models.Question
+
+@{
+    ViewBag.Title = "Thêm mới câu hỏi";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<section class="banner_main" style="margin-top: -50px;">
+    <div>
+        <h2 style="padding-top: 50px;">Thêm Mới Câu Hỏi</h2>
+        <a href="@Url.Action("Index", "Questions")" class="add_posts">
+            <h5><img height="24" width="24" src="~/Content/images/back.png" /> Quay lại</h5>
+        </a>
+    </div>
+    <br />
+
+
+    @using (Html.BeginForm("Create", "Questions", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            @Html.Label("Chọn bài kiểm tra")
+            @Html.DropDownListFor(model => model.Quiz_Id, (List<SelectListItem>)ViewBag.Quizzes, new { @class = "form-control", id = "Quiz_Id" })
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Nội dung câu hỏi")
+            @Html.EditorFor(model => model.QuestionContent, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.QuestionContent, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Đáp án 1")
+            @Html.EditorFor(model => model.Answer1, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Answer1, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Đáp án 2")
+            @Html.EditorFor(model => model.Answer2, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Answer2, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Đáp án 3")
+            @Html.EditorFor(model => model.Answer3, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Answer3, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Đáp án 4")
+            @Html.EditorFor(model => model.Answer4, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Answer4, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Đáp án đúng")
+            @Html.EditorFor(model => model.CorrectAnswer, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.CorrectAnswer, "", new { @class = "text-danger" })
+        </div>
+
+        <div style="color: red">
+            @ViewData["Error"]
+        </div>
+
+        <br />
+
+        <input style="margin-bottom: 10px;" type="submit" value="Thêm" class="btn btn-primary" />
+    }
+
+</section>
+

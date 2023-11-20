@@ -13,7 +13,7 @@
 }
 
 <section class="banner_main" style="margin-top: -50px;">
-    <h2 style="padding-top: 50px;">Sửa thông tin User</h2>
+    <h2 style="padding-top: 50px;">Sửa Thông Tin User</h2>
 
     @using (Html.BeginForm())
     {
@@ -25,15 +25,18 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.Username)
                 @Html.TextBoxFor(model => model.Username, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
             </div>
 
             <div class="form-group">
                 <strong>Họ tên</strong>
                 @Html.TextBoxFor(model => model.FullName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
             </div>
             <div class="form-group">
                 @Html.LabelFor(model => model.Email)
                 @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
             </div>
             <div class="form-group">
                 <strong>Loại tài khoản</strong>
@@ -48,7 +51,7 @@
 
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Lưu" class="btn btn-default" />
+                    <input type="submit" value="Lưu" class="btn btn-primary" />
                 </div>
             </div>
         </div>

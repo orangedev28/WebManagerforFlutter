@@ -1,0 +1,50 @@
+﻿@model WebQuanLyAppOnTap.Models.Quiz
+
+@{
+    ViewBag.Title = "Sửa bài kiểm tra";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@if (ViewData["Error"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewData["Error"]
+    </div>
+}
+
+<section class="banner_main" style="margin-top: -50px;">
+    <h2 style="padding-top: 50px;">Sửa Bài Kiểm Tra</h2>
+
+    @using (Html.BeginForm("EditQuiz", "Quizzes", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Id)
+
+            <div class="form-group">
+                <strong>Tên bài kiểm tra</strong>
+                @Html.TextBoxFor(model => model.NameQuiz, new { @class = "form-control" })
+            </div>
+
+            <div class="form-group">
+                <strong>Môn học</strong>
+                <div class="col-md-10">
+                    @Html.DropDownList("Subject_ID", (IEnumerable<SelectListItem>)ViewBag.Subjects, "", new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Lưu" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    }
+
+    <div>
+        @Html.ActionLink("Danh sách bài kiểm tra", "Index")
+    </div>
+</section>

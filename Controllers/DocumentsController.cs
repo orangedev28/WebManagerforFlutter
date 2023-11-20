@@ -22,7 +22,7 @@ namespace WebQuanLyAppOnTap.Controllers
             {
                 ConnectionMySQL connection = new ConnectionMySQL();
 
-                string query = "SELECT u.namedocument, u.linkdocument, u.dateupload, t.namesubject " +
+                string query = "SELECT u.id, u.namedocument, u.linkdocument, u.dateupload, t.namesubject " +
                    "FROM documents u " +
                    "INNER JOIN subjects t ON u.subject_id = t.id";
 
@@ -39,6 +39,7 @@ namespace WebQuanLyAppOnTap.Controllers
                         while (dataReader.Read())
                         {
                             Document doc = new Document();
+                            doc.Id = Convert.ToInt32(dataReader["id"]); // document_id
                             doc.NameDocument = dataReader["namedocument"].ToString();
                             doc.LinkDocument = dataReader["linkdocument"].ToString();
                             if (!dataReader.IsDBNull(dataReader.GetOrdinal("dateupload")))
@@ -207,6 +208,71 @@ namespace WebQuanLyAppOnTap.Controllers
             }
 
             return View(document);
+        }
+
+        public ActionResult EditDocument(int documentId)
+        {
+            if (Session["fullname"] == null)
+            {
+                return RedirectToAction("Login", "Users");
+            }
+            else
+            {
+                ConnectionMySQL connection = new ConnectionMySQL();
+
+                string query = "SELECT id, namedocument, linkdocument, subject_id " +
+                               "FROM documents " +
+                               "WHERE id = @documentId";
+
+                MySqlConnection conn = connection.ConnectionSQL();
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+
+                cmd.Parameters.AddWithValue("@documentId", documentId);
+
+                // Lấy danh sách môn học từ cơ sở dữ liệu
+                List<Subject> subjects = GetSubjectsFromDatabase();
+
+                // Chuyển danh sách môn học thành danh sách SelectListItem
+                List<SelectListItem> subjectListItems = subjects.Select(s => new SelectListItem
+                {
+                    Value = s.Id.ToString(), // s.Id là subject_id
+                    Text = s.NameSubject // s.Name là namesubject
+                }).ToList();
+
+                ViewBag.Subjects = subjectListItems; // Gửi danh sách môn học đến View
+
+                try
+                {
+                    conn.Open();
+                    var reader = cmd.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        Document document = new Document();
+                        document.Id = Convert.ToInt32(reader["id"]);
+                        document.NameDocument = reader["namedocument"].ToString();
+                        document.LinkDocument = reader["linkdocument"].ToString();
+                        document.Subject_ID = Convert.ToInt32(reader["subject_id"]);
+
+                        conn.Close();
+                        return View(document);
+                    }
+                    else
+                    {
+                        conn.Close();
+                        return View("Error");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions
+                    return View("Error");
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
         }
     }
 }

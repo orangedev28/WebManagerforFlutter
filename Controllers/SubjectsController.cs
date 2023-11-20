@@ -47,7 +47,6 @@ namespace WebQuanLyAppOnTap.Controllers
                 }
                 catch (Exception ex)
                 {
-                    // Handle exceptions
                     return View("Error");
                 }
                 finally
@@ -70,6 +69,7 @@ namespace WebQuanLyAppOnTap.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Create(Subject subject)
         {
             if (ModelState.IsValid)
@@ -81,8 +81,10 @@ namespace WebQuanLyAppOnTap.Controllers
                 {
                     conn.Open();
 
+                    // Kiểm tra tên môn học đã tồn tại chưa
                     string checkQuery = "SELECT COUNT(*) FROM subjects WHERE namesubject = @namesubject";
                     MySqlCommand checkCmd = new MySqlCommand(checkQuery, conn);
+
                     checkCmd.Parameters.AddWithValue("@namesubject", subject.NameSubject);
 
                     int subjectCount = Convert.ToInt32(checkCmd.ExecuteScalar());
@@ -93,16 +95,14 @@ namespace WebQuanLyAppOnTap.Controllers
                         return View(subject);
                     }
 
-                    // If the document doesn't exist, proceed to insert it
                     string insertQuery = "INSERT INTO subjects (namesubject) VALUES (@namesubject)";
                     MySqlCommand insertCmd = new MySqlCommand(insertQuery, conn);
 
                     // Thêm các tham số để tránh tấn công SQL Injection
                     insertCmd.Parameters.AddWithValue("@namesubject", subject.NameSubject);
-
                     insertCmd.ExecuteNonQuery(); // Thực hiện lệnh INSERT
 
-                    return RedirectToAction("Index", "Subjects"); // Chuyển hướng sau khi thêm thành công
+                    return RedirectToAction("Index", "Subjects");
                 }
                 catch (Exception ex)
                 {
@@ -152,12 +152,11 @@ namespace WebQuanLyAppOnTap.Controllers
                     else
                     {
                         conn.Close();
-                        return View("Error"); // Hoặc chuyển hướng đến trang lỗi
+                        return View("Error");
                     }
                 }
                 catch (Exception ex)
                 {
-                    // Handle exceptions
                     return View("Error");
                 }
                 finally
@@ -188,6 +187,7 @@ namespace WebQuanLyAppOnTap.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult EditSubject(Subject subject)
         {
             if (ModelState.IsValid)
@@ -240,6 +240,23 @@ namespace WebQuanLyAppOnTap.Controllers
                 ViewData["Error"] = "Dữ liệu không hợp lệ.";
                 return View(subject);
             }
+        }
+
+        private bool CheckIfSubjectHasQuizzes(int subjectId)
+        {
+            ConnectionMySQL connection = new ConnectionMySQL();
+            string query = "SELECT COUNT(*) FROM quizzes WHERE subject_id = @subjectId";
+
+            MySqlConnection conn = connection.ConnectionSQL();
+            MySqlCommand cmd = new MySqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("@subjectId", subjectId);
+
+            conn.Open();
+            int count = Convert.ToInt32(cmd.ExecuteScalar());
+            conn.Close();
+
+            return count > 0; // Nếu count > 0, tồn tại bài kiểm tra của môn học
         }
 
         public ActionResult DeleteSubject(int subjectId)
@@ -300,24 +317,8 @@ namespace WebQuanLyAppOnTap.Controllers
             }
         }
 
-        private bool CheckIfSubjectHasQuizzes(int subjectId)
-        {
-            ConnectionMySQL connection = new ConnectionMySQL();
-            string query = "SELECT COUNT(*) FROM quizzes WHERE subject_id = @subjectId";
-
-            MySqlConnection conn = connection.ConnectionSQL();
-            MySqlCommand cmd = new MySqlCommand(query, conn);
-
-            cmd.Parameters.AddWithValue("@subjectId", subjectId);
-
-            conn.Open();
-            int count = Convert.ToInt32(cmd.ExecuteScalar());
-            conn.Close();
-
-            return count > 0; // Nếu count > 0, tồn tại bài kiểm tra của môn học
-        }
-
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int subjectId)
         {
             if (Session["fullname"] == null)
