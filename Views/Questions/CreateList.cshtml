@@ -1,0 +1,86 @@
+﻿@model WebQuanLyAppOnTap.Models.Question
+
+@{
+    ViewBag.Title = "Thêm mới danh sách câu hỏi";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@if (!string.IsNullOrEmpty(TempData["QuestionExistsError"] as string))
+{
+    <script>
+        // Display the error message in an alert
+        alert('@TempData["QuestionExistsError"]');
+    </script>
+}
+
+@if (ViewData["Error"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewData["Error"]
+    </div>
+}
+
+<section class="banner_main" style="margin-top: -50px;">
+    <div>
+        <h2 style="padding-top: 50px;">Thêm Mới Danh Sách Câu Hỏi</h2>
+        <button type="button" onclick="window.location.href='@Url.Action("Index", "Questions")'" class="add_posts btn">
+            <img height="24" width="24" src="~/Content/images/back.png" /> Quay lại
+        </button>
+    </div>
+
+    <br />
+
+    @using (Html.BeginForm("UploadQuestions", "Questions", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            @Html.Label("Chọn bài kiểm tra cho danh sách câu hỏi")
+            <button type="button" onclick="window.location.href='@Url.Action("Create", "Quizzes")'" class="add_posts btn">
+                <img height="24" width="24" src="~/Content/images/add.png" /> Hoặc tạo mới Bài kiểm tra
+            </button>
+
+            @Html.DropDownListFor(model => model.Quiz_Id, (List<SelectListItem>)ViewBag.Quizzes, new { @class = "form-control", id = "Quiz_Id" })
+        </div>
+
+        <div class="form-group">
+            <label for="file">Thêm danh sách câu hỏi bằng Excel:</label>
+            <input type="file" name="file" id="file" accept=".xlsx" required />
+        </div>
+
+        @* Update the name of the hidden field to match the parameter name *@
+        @Html.HiddenFor(model => model.Quiz_Id)
+
+        <input type="submit" value="Tải lên" onclick="return validateFileExtension()" />
+
+        <div id="fileError" style="color: red;"></div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var fileInput = document.getElementById('file');
+                var fileError = document.getElementById('fileError');
+
+                fileInput.addEventListener('change', function () {
+                    fileError.innerText = ''; // Clear previous error message
+                });
+
+                document.forms[0].onsubmit = function () {
+                    if (!fileInput.files.length) {
+                        fileError.innerText = 'Bạn chưa chọn file câu hỏi!';
+                        return false;
+                    }
+
+                    var fileName = fileInput.value;
+                    var ext = fileName.split('.').pop().toLowerCase();
+
+                    if (ext !== 'xlsx') {
+                        fileError.innerText = 'Sai định dạng file Excel!';
+                        return false;
+                    }
+
+                    return true;
+                };
+            });
+        </script>
+    }
+</section>

@@ -49,14 +49,14 @@
                     @document.LinkDocument
                 </td>
                 <td>
-                    @document.DateUpload
+                    @document.DateUpload.ToString("dd/MM/yyyy HH:mm:ss")
                 </td>
                 <td>
-                    @document.NameSubject
+                    @(document.NameSubject ?? "N/A")
                 </td>
                 <td>
-                    <a class="edit-link" href="@Url.Action("EditDocument", "Documents", new { documentId = document.Id })">Sửa Tài liệu |</a>
-                    <a class="edit-link" href="@Url.Action("DeleteDocument", "Documents", new { documentId = document.Id })"> Xóa Tài liệu</a>
+                    <a class="edit-link" href="@Url.Action("EditDocument", "Documents", new { documentId = document.Id })">Sửa |</a>
+                    <a class="edit-link" href="@Url.Action("DeleteDocument", "Documents", new { documentId = document.Id })"> Xóa</a>
                 </td>
             </tr>
         }

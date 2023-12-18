@@ -30,18 +30,21 @@
             </div>
 
             <div class="form-group">
-                <strong>Tệp PDF</strong>
+                <strong>Thay đổi PDF</strong>
                 <div class="col-md-10">
-                    <input type="file" name="file" id="fileInput" />
+                    <input type="file" name="file" id="fileInput" accept=".pdf" />
                     @Html.ValidationMessageFor(model => model.LinkDocument, "", new { @class = "text-danger" })
                 </div>
             </div>
 
             <div class="form-group">
+                <strong>Link tài liệu hiện tại</strong>
+                @Html.TextBoxFor(model => model.LinkDocument, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+
+            <div class="form-group">
                 <strong>Tên môn học</strong>
-                <div class="col-md-10">
-                    @Html.DropDownList("Subject_ID", (IEnumerable<SelectListItem>)ViewBag.Subjects, "Chọn môn học", new { @class = "form-control" })
-                </div>
+                @Html.DropDownList("Subject_ID", (IEnumerable<SelectListItem>)ViewBag.Subjects, "Chọn môn học", new { @class = "form-control" })
             </div>
 
             <div class="form-group">
@@ -55,4 +58,32 @@
     <div>
         @Html.ActionLink("Danh sách tài liệu", "Index")
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#fileInput").change(function () {
+                var fileInput = document.getElementById('fileInput');
+                if (fileInput.files.length === 0) {
+                    // Không có tệp nào được chọn
+                    alert('Hãy chọn tài liệu tải lên!');
+                } else {
+                    var fileName = fileInput.files[0].name;
+                    if (!isValidPdf(fileName)) {
+                        // File không phải là PDF
+                        alert('Sai định dạng file PDF!');
+                        // Xóa giá trị trong input file để người dùng chọn lại
+                        $("#fileInput").val('');
+                    }
+                }
+            });
+
+            function isValidPdf(fileName) {
+                return fileName.toLowerCase().endsWith('.pdf');
+            }
+        });
+    </script>
 </section>

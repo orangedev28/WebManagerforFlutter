@@ -12,8 +12,8 @@ namespace WebQuanLyAppOnTap.Models
         [Required(ErrorMessage = "Hãy nhập Tên tài liệu!")]
         public string NameDocument { get; set; }
         public string LinkDocument { get; set; }
-        public DateTime? DateUpload { get; set; }
-        public int Subject_ID { get; set; }
+        public DateTime DateUpload { get; set; }
+        public int? Subject_ID { get; set; }
         public string NameSubject { get; set; }
     }
 }

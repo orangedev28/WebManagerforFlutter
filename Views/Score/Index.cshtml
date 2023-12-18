@@ -1,0 +1,60 @@
+﻿@model List<WebQuanLyAppOnTap.Models.ScoreData>
+
+@{
+    ViewBag.Title = "Danh sách điểm";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    .table th, .table td {
+        text-align: center; /* Canh giữa nội dung */
+        vertical-align: middle; /* Canh giữa theo chiều dọc */
+        padding: 8px; /* Khoảng cách giữa nội dung và viền của cột */
+    }
+</style>
+
+<section class="banner_main" style="margin-top: -50px;">
+    <h2 style="padding-top: 50px;">Danh Sách Điểm Bài Kiểm Tra</h2>
+
+    <br />
+
+    <table class="table">
+        <tr style="background-color: aqua; text-align: center">
+            <th>
+                Bài kiểm tra
+            </th>
+            <th>
+                Điểm số
+            </th>
+            <th>
+                Tên người dùng
+            </th>
+            <th>
+                Ngày lưu
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var score in Model)
+        {
+            <tr>
+                <td>
+                    @score.NameQuiz
+                </td>
+                <td>
+                    @Math.Round(score.Score, 1)
+                </td>
+                <td>
+                    @score.FullName
+                </td>
+                <td>
+                    @score.DateAdd.ToString("dd/MM/yyyy HH:mm:ss")
+                </td>
+                <td>
+                    <a class="edit-link" href="@Url.Action("DeleteScore", "Score", new { scoreId = score.Id })"> Xóa điểm</a>
+                </td>
+            </tr>
+        }
+    </table>
+</section>
+

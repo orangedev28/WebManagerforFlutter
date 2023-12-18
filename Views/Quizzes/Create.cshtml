@@ -10,7 +10,7 @@
     $(document).ready(function () {
         $("form").submit(function (event) {
             if ($("#Subject_ID").val() === "" || $("#NameQuiz").val().trim() === "") {
-                alert("Môn học và bài kiểm tra không được phép trống!");
+                alert("Hãy nhập và chọn đầy đủ Tên bài kiểm tra và Môn học!");
                 event.preventDefault();
             }
         });
@@ -27,9 +27,9 @@
 <section class="banner_main" style="margin-top: -50px;">
     <div>
         <h2 style="padding-top: 50px;">Thêm Mới Bài Kiểm Tra</h2>
-        <a href="@Url.Action("Index", "Quizzes")" class="add_posts">
-            <h5><img height="24" width="24" src="~/Content/images/back.png" /> Quay lại</h5>
-        </a>
+        <button type="button" onclick="window.location.href='@Url.Action("Index", "Quizzes")'" class="add_posts btn">
+            <img height="24" width="24" src="~/Content/images/back.png" /> Quay lại
+        </button>
     </div>
 
     <br />

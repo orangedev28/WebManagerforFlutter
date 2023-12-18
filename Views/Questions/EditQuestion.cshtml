@@ -1,0 +1,91 @@
+﻿@model WebQuanLyAppOnTap.Models.Question
+
+@{
+    ViewBag.Title = "Sửa câu hỏi";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@if (ViewData["Error"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewData["Error"]
+    </div>
+}
+
+<section class="banner_main" style="margin-top: -50px;">
+    <h2 style="padding-top: 50px;">Sửa Câu Hỏi</h2>
+
+    @using (Html.BeginForm("EditQuestion", "Questions", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Id)
+
+            <div class="form-group">
+                @Html.Label("Bài kiểm tra")
+                @Html.DropDownListFor(
+                    model => model.Quiz_Id,
+                    (List<SelectListItem>)ViewBag.Quizzes,
+                    "Lựa chọn một bài kiểm tra",
+                    new { @class = "form-control" }
+                )
+                @Html.ValidationMessageFor(model => model.Quiz_Id, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <strong>Nội dung câu hỏi</strong>
+                @Html.TextBoxFor(model => model.QuestionContent, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.QuestionContent, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <strong>Đáp án 1</strong>
+                @Html.TextBoxFor(model => model.Answer1, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Answer1, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <strong>Đáp án 2</strong>
+                @Html.TextBoxFor(model => model.Answer2, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Answer2, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <strong>Đáp án 3</strong>
+                @Html.TextBoxFor(model => model.Answer3, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Answer3, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <strong>Đáp án 4</strong>
+                @Html.TextBoxFor(model => model.Answer4, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Answer4, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <strong>Đáp án đúng</strong>
+                @Html.TextBoxFor(model => model.CorrectAnswer, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.CorrectAnswer, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <strong>Hot Question (Nhập True nếu là câu hỏi Hot)</strong>
+                @Html.TextBoxFor(model => model.HotQuestion, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.HotQuestion, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Lưu" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    }
+
+    <div>
+        @Html.ActionLink("Danh sách câu hỏi", "Index")
+    </div>
+
+</section>

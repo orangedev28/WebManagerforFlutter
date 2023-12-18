@@ -1,0 +1,60 @@
+﻿@model WebQuanLyAppOnTap.Models.Video
+
+@{
+    ViewBag.Title = "Sửa thông tin video";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@if (ViewData["Error"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewData["Error"]
+    </div>
+}
+
+<section class="banner_main" style="margin-top: -50px;">
+    <h2 style="padding-top: 50px;">Sửa Thông Tin Video</h2>
+
+    @using (Html.BeginForm("EditVideo", "Videos", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Id)
+
+            <div class="form-group">
+                @Html.Label("Môn học")
+                @Html.DropDownListFor(
+                    model => model.Subject_ID,
+                    (List<SelectListItem>)ViewBag.Subjects,
+                    "Lựa chọn một môn học",
+                    new { @class = "form-control" }
+                )
+                @Html.ValidationMessageFor(model => model.Subject_ID, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <strong>Tên video bài giảng</strong>
+                @Html.TextBoxFor(model => model.NameVideo, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.NameVideo, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <strong>Link video</strong>
+                @Html.TextBoxFor(model => model.LinkVideo, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.LinkVideo, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Lưu" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    }
+
+    <div>
+        @Html.ActionLink("Danh sách video", "Index")
+    </div>
+</section>

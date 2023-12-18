@@ -8,14 +8,14 @@
 <section class="banner_main" style="margin-top: -50px;">
     <div>
         <h2 style="padding-top: 50px;">Thêm Mới Tài Liệu</h2>
-        <a href="@Url.Action("Index", "Documents")" class="add_posts">
-            <h5><img height="24" width="24" src="~/Content/images/back.png" /> Quay lại</h5>
-        </a>
+        <button type="button" onclick="window.location.href='@Url.Action("Index", "Documents")'" class="add_posts btn">
+            <img height="24" width="24" src="~/Content/images/back.png" /> Quay lại
+        </button>
     </div>
     <br />
 
 
-    @using (Html.BeginForm("Create", "Documents", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    @using (Html.BeginForm("Create", "Documents", FormMethod.Post, new { enctype = "multipart/form-data", id = "documentForm" }))
     {
         @Html.AntiForgeryToken()
 
@@ -51,14 +51,19 @@
 
     <script>
         $(document).ready(function () {
-            $("form").submit(function (event) {
+            $("#documentForm").submit(function (event) {
                 var fileInput = document.getElementById('file');
                 if (fileInput.files.length === 0) {
                     event.preventDefault(); // Ngăn form được gửi đi
                     alert('Hãy chọn tài liệu tải lên!'); // Hiển thị thông báo
+                } else {
+                    var fileName = fileInput.files[0].name;
+                    if (!fileName.endsWith('.pdf') && !fileName.endsWith('.PDF')) {
+                        event.preventDefault(); // Ngăn form được gửi đi
+                        alert('Sai định dạng file PDF!'); // Hiển thị thông báo
+                    }
                 }
             });
         });
     </script>
 </section>
-

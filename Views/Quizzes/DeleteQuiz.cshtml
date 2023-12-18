@@ -1,0 +1,54 @@
+﻿@model WebQuanLyAppOnTap.Models.Quiz
+
+@{
+    ViewBag.Title = "Xóa bài kiểm tra";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@if (ViewData["Error"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewData["Error"]
+    </div>
+}
+
+<section class="banner_main" style="margin-top: -50px;">
+    <h2 style="padding-top:50px;">Xóa bài kiểm tra sẽ xóa toàn bộ câu hỏi trong bài?</h2>
+    <h2>Bạn có chắc chắn muốn xóa?</h2>
+
+    <div class="form-horizontal">
+        <hr />
+
+        <div class="form-group">
+            <strong>Tên bài kiểm tra: </strong>
+            <span>@Model.NameQuiz</span>
+        </div>
+
+        <div class="form-group">
+            <strong>Ngày đăng: </strong>
+            <span>@Model.DateUpload</span>
+        </div>
+
+        <div class="form-group">
+            <strong>Môn học: </strong>
+            <span>@Model.NameSubject</span>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("DeleteConfirmed", "Quizzes", new { quizId = Model.Id }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Xác nhận Xóa" class="btn" style="background-color: red; color: white;" />
+            </div>
+        </div>
+    }
+
+    <div>
+        @Html.ActionLink("Danh sách bài kiểm tra", "Index")
+    </div>
+
+</section>
+
+

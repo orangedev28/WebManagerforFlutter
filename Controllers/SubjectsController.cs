@@ -215,13 +215,13 @@ namespace WebQuanLyAppOnTap.Controllers
                         }
                         else
                         {
-                            ViewData["Error"] = "Không thể cập nhật môn học.";
+                            ViewData["Error"] = "Không thể cập nhật môn học!";
                             return View(subject);
                         }
                     }
                     catch (Exception ex)
                     {
-                        ViewData["Error"] = "Đã xảy ra lỗi trong quá trình cập nhật môn học.";
+                        ViewData["Error"] = "Đã xảy ra lỗi trong quá trình cập nhật môn học!";
                         return View(subject);
                     }
                     finally
@@ -231,32 +231,15 @@ namespace WebQuanLyAppOnTap.Controllers
                 }
                 else
                 {
-                    ViewData["Error"] = "Môn học đã tồn tại.";
+                    ViewData["Error"] = "Môn học đã tồn tại!";
                     return View(subject);
                 }
             }
             else
             {
-                ViewData["Error"] = "Dữ liệu không hợp lệ.";
+                ViewData["Error"] = "Dữ liệu không hợp lệ!";
                 return View(subject);
             }
-        }
-
-        private bool CheckIfSubjectHasQuizzes(int subjectId)
-        {
-            ConnectionMySQL connection = new ConnectionMySQL();
-            string query = "SELECT COUNT(*) FROM quizzes WHERE subject_id = @subjectId";
-
-            MySqlConnection conn = connection.ConnectionSQL();
-            MySqlCommand cmd = new MySqlCommand(query, conn);
-
-            cmd.Parameters.AddWithValue("@subjectId", subjectId);
-
-            conn.Open();
-            int count = Convert.ToInt32(cmd.ExecuteScalar());
-            conn.Close();
-
-            return count > 0; // Nếu count > 0, tồn tại bài kiểm tra của môn học
         }
 
         public ActionResult DeleteSubject(int subjectId)
@@ -267,17 +250,6 @@ namespace WebQuanLyAppOnTap.Controllers
             }
             else
             {
-                bool subjectHasQuizzes = CheckIfSubjectHasQuizzes(subjectId);
-
-                if (subjectHasQuizzes)
-                {
-                    ViewBag.HasQuizzes = true;
-                }
-                else
-                {
-                    ViewBag.HasQuizzes = false;
-                }
-
                 ConnectionMySQL connection = new ConnectionMySQL();
                 string query = "SELECT id, namesubject FROM subjects WHERE id = @subjectId";
 

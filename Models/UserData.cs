@@ -16,7 +16,8 @@ namespace WebQuanLyAppOnTap.Models
         public string Email { get; set; }
         [Required(ErrorMessage = "Hãy nhập Họ tên!")]
         public string FullName { get; set; }
-        public int UserType_ID { get; set; }
+        [Required(ErrorMessage = "Hãy chọn loại Tài khoản!")]
+        public int? UserType_ID { get; set; }
         public string NameType { get; set; }
     }
 }

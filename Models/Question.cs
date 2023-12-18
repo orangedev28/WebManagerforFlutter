@@ -21,7 +21,11 @@ namespace WebQuanLyAppOnTap.Models
         public string Answer4 { get; set; }
         [Required(ErrorMessage = "Hãy nhập Đáp án đúng!")]
         public string CorrectAnswer { get; set; }
+        [Required(ErrorMessage = "Hãy chọn Bài kiểm tra!")]
         public int Quiz_Id { get; set; }
         public string NameQuiz { get; set; }
+        public int? Subject_Id { get; set; }
+        public string SubjectName { get; set; }
+        public bool? HotQuestion { get; set; }
     }
 }

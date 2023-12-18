@@ -47,6 +47,8 @@
                         new SelectListItem { Text = "Quản trị viên", Value = "2" },
                         new SelectListItem { Text = "Người dùng", Value = "3" }
                     }, "Value", "Text"), "-- Lựa chọn loại tài khoản --", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.UserType_ID, "", new { @class = "text-danger" })
+
             </div>
 
             <div class="form-group">

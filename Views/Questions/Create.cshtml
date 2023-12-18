@@ -5,15 +5,22 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
+@if (ViewData["Error"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewData["Error"]
+    </div>
+}
+
 <section class="banner_main" style="margin-top: -50px;">
     <div>
         <h2 style="padding-top: 50px;">Thêm Mới Câu Hỏi</h2>
-        <a href="@Url.Action("Index", "Questions")" class="add_posts">
-            <h5><img height="24" width="24" src="~/Content/images/back.png" /> Quay lại</h5>
-        </a>
+        <button type="button" onclick="window.location.href='@Url.Action("Index", "Questions")'" class="add_posts btn">
+            <img height="24" width="24" src="~/Content/images/back.png" /> Quay lại
+        </button>
     </div>
-    <br />
 
+    <br />
 
     @using (Html.BeginForm("Create", "Questions", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
@@ -59,12 +66,6 @@
             @Html.EditorFor(model => model.CorrectAnswer, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.CorrectAnswer, "", new { @class = "text-danger" })
         </div>
-
-        <div style="color: red">
-            @ViewData["Error"]
-        </div>
-
-        <br />
 
         <input style="margin-bottom: 10px;" type="submit" value="Thêm" class="btn btn-primary" />
     }

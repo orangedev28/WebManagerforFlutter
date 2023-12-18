@@ -13,7 +13,9 @@
 }
 
 <section class="banner_main" style="margin-top: -50px;">
-    <h2 style="padding-top:50px;">Bạn có chắc chắn muốn xóa User sau đây không?</h2>
+    <h2 style="padding-top:50px;">Nếu xóa người dùng sẽ xóa toàn bộ điểm của người dùng này</h2>
+    <h2>Bạn chắc chắn muốn xóa?</h2>
+
 
     <div class="form-horizontal">
         <hr />
@@ -39,22 +41,13 @@
         </div>
     </div>
 
-    @if (!ViewBag.HasScore)
+    @using (Html.BeginForm("DeleteConfirmed", "Users", new { userId = Model.Id }))
     {
-        using (Html.BeginForm("DeleteConfirmed", "Users", new { userId = Model.Id }))
-        {
-            @Html.AntiForgeryToken()
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Xác nhận Xóa" class="btn" style="background-color: red; color: white;" />
-                </div>
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Xác nhận Xóa" class="btn" style="background-color: red; color: white;" />
             </div>
-        }
-    }
-    else
-    {
-        <div class="alert alert-warning" role="alert">
-            Người dùng còn điểm số trong cơ sở dữ liệu không được phép xóa.
         </div>
     }
 

@@ -19,14 +19,31 @@
     <br />
 
     <p>
-        @Html.ActionLink("Thêm mới", "Create")
+        @Html.ActionLink("Thêm mới từng câu hỏi", "Create")
     </p>
+
+    <p>
+        @Html.ActionLink("Thêm mới danh sách câu hỏi", "CreateList")
+    </p>
+
+    <div>
+        @using (Html.BeginForm("Index", "Questions", FormMethod.Get))
+        {
+            <div class="form-group">
+                @Html.Label("Hiển thị danh sách câu hỏi theo bài kiểm tra:")
+                @Html.DropDownList("selectedQuizId", ViewBag.Quizzes as SelectList, "Chọn bài kiểm tra", new { @class = "form-control" })
+                <br />
+                <input type="submit" value="Lọc" class="btn btn-primary" />
+            </div>
+        }
+    </div>
 
     <table class="table">
         <tr style="background-color: aqua; text-align: center">
             <th>
                 Nội dung
             </th>
+            <!--
             <th>
                 Đáp án 1
             </th>
@@ -39,6 +56,7 @@
             <th>
                 Đáp án 4
             </th>
+                -->
             <th>
                 Đáp án đúng
             </th>
@@ -54,6 +72,7 @@
                 <td>
                     @question.QuestionContent
                 </td>
+                <!--
                 <td>
                     @question.Answer1
                 </td>
@@ -66,6 +85,7 @@
                 <td>
                     @question.Answer4
                 </td>
+                    -->
                 <td>
                     @question.CorrectAnswer
                 </td>
@@ -79,6 +99,5 @@
             </tr>
         }
     </table>
-
 </section>
 

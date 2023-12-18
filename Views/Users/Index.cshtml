@@ -53,7 +53,7 @@
                     @user.Email
                 </td>
                 <td>
-                    @user.NameType
+                    @(user.NameType ?? "N/A")
                 </td>
                 <td>
                     @if (Session["usertype_id"] != null && (int)Session["usertype_id"] == 1)

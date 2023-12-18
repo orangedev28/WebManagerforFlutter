@@ -1,0 +1,58 @@
+﻿@model WebQuanLyAppOnTap.Models.Document
+
+@{
+    ViewBag.Title = "Xóa tài liệu";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@if (ViewData["Error"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewData["Error"]
+    </div>
+}
+
+<section class="banner_main" style="margin-top: -50px;">
+    <h2 style="padding-top:50px;">Bạn có chắn muốn xóa tài liệu này?</h2>
+
+    <div class="form-horizontal">
+        <hr />
+
+        <div class="form-group">
+            <strong>Tên tài liệu: </strong>
+            <span>@Model.NameDocument</span>
+        </div>
+
+        <div class="form-group">
+            <strong>Link tài liệu: </strong>
+            <span>@Model.LinkDocument</span>
+        </div>
+
+        <div class="form-group">
+            <strong>Ngày đăng: </strong>
+            <span>@Model.DateUpload.ToString("dd/MM/yyyy HH:mm:ss")</span>
+        </div>
+
+        <div class="form-group">
+            <strong>Môn học: </strong>
+            <span>@Model.NameSubject</span>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("DeleteConfirmed", "Documents", new { documentId = Model.Id }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Xác nhận Xóa" class="btn" style="background-color: red; color: white;" />
+            </div>
+        </div>
+    }
+
+    <div>
+        @Html.ActionLink("Danh sách tài liệu", "Index")
+    </div>
+
+</section>
+
+

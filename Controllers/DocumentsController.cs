@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using iText.StyledXmlParser.Node;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +24,8 @@ namespace WebQuanLyAppOnTap.Controllers
                 ConnectionMySQL connection = new ConnectionMySQL();
 
                 string query = "SELECT u.id, u.namedocument, u.linkdocument, u.dateupload, t.namesubject " +
-                   "FROM documents u " +
-                   "INNER JOIN subjects t ON u.subject_id = t.id";
+                               "FROM documents u " +
+                               "LEFT JOIN subjects t ON u.subject_id = t.id";
 
                 MySqlConnection conn = connection.ConnectionSQL();
                 MySqlCommand cmd = new MySqlCommand(query, conn);
@@ -39,20 +40,11 @@ namespace WebQuanLyAppOnTap.Controllers
                         while (dataReader.Read())
                         {
                             Document doc = new Document();
-                            doc.Id = Convert.ToInt32(dataReader["id"]); // document_id
+                            doc.Id = Convert.ToInt32(dataReader["id"]);
                             doc.NameDocument = dataReader["namedocument"].ToString();
                             doc.LinkDocument = dataReader["linkdocument"].ToString();
-                            if (!dataReader.IsDBNull(dataReader.GetOrdinal("dateupload")))
-                            {
-                                // Lấy giá trị kiểu DateTime từ cột dateupload
-                                doc.DateUpload = dataReader.GetDateTime(dataReader.GetOrdinal("dateupload"));
-                            }
-                            else
-                            {
-                                // Xử lý nếu giá trị là NULL
-                                doc.DateUpload = null;
-                            }
-                            doc.NameSubject = dataReader["namesubject"].ToString();       
+                            doc.DateUpload = dataReader.GetDateTime(dataReader.GetOrdinal("dateupload"));
+                            doc.NameSubject = dataReader["namesubject"].ToString();
                             documentList.Add(doc);
                         }
                     }
@@ -61,7 +53,6 @@ namespace WebQuanLyAppOnTap.Controllers
                 }
                 catch (Exception ex)
                 {
-                    // Handle exceptions
                     return View("Error");
                 }
                 finally
@@ -73,10 +64,8 @@ namespace WebQuanLyAppOnTap.Controllers
 
         private List<Subject> GetSubjectsFromDatabase()
         {
-            // Kết nối đến cơ sở dữ liệu và truy vấn để lấy danh sách môn học
             List<Subject> subjects = new List<Subject>();
 
-            // Thực hiện truy vấn để lấy danh sách môn học từ cơ sở dữ liệu
             try
             {
                 ConnectionMySQL connection = new ConnectionMySQL();
@@ -84,7 +73,7 @@ namespace WebQuanLyAppOnTap.Controllers
 
                 conn.Open();
 
-                string query = "SELECT * FROM subjects"; // Đảm bảo rằng truy vấn này phù hợp với cấu trúc bảng subjects trong cơ sở dữ liệu của bạn
+                string query = "SELECT * FROM subjects";
 
                 MySqlCommand cmd = new MySqlCommand(query, conn);
 
@@ -93,7 +82,7 @@ namespace WebQuanLyAppOnTap.Controllers
                     while (dataReader.Read())
                     {
                         Subject subject = new Subject();
-                        subject.Id = Convert.ToInt32(dataReader["id"]); // subject_id
+                        subject.Id = Convert.ToInt32(dataReader["id"]);
                         subject.NameSubject = dataReader["namesubject"].ToString();
                         subjects.Add(subject);
                     }
@@ -103,7 +92,7 @@ namespace WebQuanLyAppOnTap.Controllers
             }
             catch (Exception ex)
             {
-                // Xử lý ngoại lệ, ví dụ ghi log lỗi hoặc thông báo lỗi
+
             }
 
             return subjects;
@@ -117,20 +106,17 @@ namespace WebQuanLyAppOnTap.Controllers
             }
             else
             {
-                // Lấy danh sách môn học từ cơ sở dữ liệu
                 List<Subject> subjects = GetSubjectsFromDatabase();
 
-                // Chuyển danh sách môn học thành danh sách SelectListItem
                 List<SelectListItem> subjectListItems = subjects.Select(s => new SelectListItem
                 {
-                    Value = s.Id.ToString(), // s.Id là subject_id
-                    Text = s.NameSubject // s.Name là namesubject
+                    Value = s.Id.ToString(),
+                    Text = s.NameSubject
                 }).ToList();
 
-                ViewBag.Subjects = subjectListItems; // Gửi danh sách môn học đến View
+                ViewBag.Subjects = subjectListItems;
 
-                // Set the default selected value to the ID of the first subject
-                var defaultSubjectId = subjects.FirstOrDefault()?.Id; // Get the ID of the first subject
+                var defaultSubjectId = subjects.FirstOrDefault()?.Id;
                 ViewBag.DefaultSubjectId = defaultSubjectId;
 
                 return View();
@@ -144,15 +130,13 @@ namespace WebQuanLyAppOnTap.Controllers
             {
                 if (file != null && file.ContentLength > 0)
                 {
-                    // Lưu tệp PDF vào đường dẫn '' và cập nhật link tài liệu trong document
                     string filePath = @"D:\flutterapp\appvscode\app_ontapkienthuc\assets\pdf\" + file.FileName;
                     file.SaveAs(filePath);
                     document.LinkDocument = "assets/pdf/" + file.FileName;
                 }
 
-                document.DateUpload = DateTime.Now; // Ngày giờ hiện tại
+                document.DateUpload = DateTime.Now;
 
-                // Kết nối đến cơ sở dữ liệu
                 ConnectionMySQL connection = new ConnectionMySQL();
                 MySqlConnection conn = connection.ConnectionSQL();
 
@@ -160,7 +144,7 @@ namespace WebQuanLyAppOnTap.Controllers
                 {
                     conn.Open();
 
-                    // Check if the document already exists by namedocument or linkdocument with the provided subject_id
+                    // kiểm tra tài liệu đã tồn tại với môn học này chưa
                     string checkQuery = "SELECT COUNT(*) FROM documents WHERE (namedocument = @namedoc OR linkdocument = @linkdoc) AND subject_id = @subjectid";
                     MySqlCommand checkCmd = new MySqlCommand(checkQuery, conn);
                     checkCmd.Parameters.AddWithValue("@namedoc", document.NameDocument);
@@ -171,7 +155,6 @@ namespace WebQuanLyAppOnTap.Controllers
 
                     if (documentCount > 0)
                     {
-                        // Document already exists with the provided subject_id
                         ViewData["Error"] = "Tài liệu đã tồn tại với môn học đã chọn!";
                         ViewBag.Subjects = GetSubjectsFromDatabase()
                             .Select(s => new SelectListItem
@@ -182,23 +165,20 @@ namespace WebQuanLyAppOnTap.Controllers
                         return View(document);
                     }
 
-                    // If the document doesn't exist, proceed to insert it
                     string insertQuery = "INSERT INTO documents (namedocument, linkdocument, dateupload, subject_id) VALUES (@namedocument, @linkdocument, @dateupload, @subject_id)";
                     MySqlCommand insertCmd = new MySqlCommand(insertQuery, conn);
 
-                    // Thêm các tham số để tránh tấn công SQL Injection
                     insertCmd.Parameters.AddWithValue("@namedocument", document.NameDocument);
                     insertCmd.Parameters.AddWithValue("@linkdocument", document.LinkDocument);
                     insertCmd.Parameters.AddWithValue("@dateupload", document.DateUpload);
-                    insertCmd.Parameters.AddWithValue("@subject_id", document.Subject_ID);
+                    insertCmd.Parameters.AddWithValue("@subject_id", document.Subject_ID ?? (object)DBNull.Value);
 
-                    insertCmd.ExecuteNonQuery(); // Thực hiện lệnh INSERT
+                    insertCmd.ExecuteNonQuery();
 
-                    return RedirectToAction("Index", "Documents"); // Chuyển hướng sau khi thêm thành công
+                    return RedirectToAction("Index", "Documents");
                 }
                 catch (Exception ex)
                 {
-                    // Xử lý ngoại lệ
                     return View("Error");
                 }
                 finally
@@ -229,17 +209,15 @@ namespace WebQuanLyAppOnTap.Controllers
 
                 cmd.Parameters.AddWithValue("@documentId", documentId);
 
-                // Lấy danh sách môn học từ cơ sở dữ liệu
                 List<Subject> subjects = GetSubjectsFromDatabase();
 
-                // Chuyển danh sách môn học thành danh sách SelectListItem
                 List<SelectListItem> subjectListItems = subjects.Select(s => new SelectListItem
                 {
-                    Value = s.Id.ToString(), // s.Id là subject_id
-                    Text = s.NameSubject // s.Name là namesubject
+                    Value = s.Id.ToString(),
+                    Text = s.NameSubject
                 }).ToList();
 
-                ViewBag.Subjects = subjectListItems; // Gửi danh sách môn học đến View
+                ViewBag.Subjects = subjectListItems;
 
                 try
                 {
@@ -252,7 +230,7 @@ namespace WebQuanLyAppOnTap.Controllers
                         document.Id = Convert.ToInt32(reader["id"]);
                         document.NameDocument = reader["namedocument"].ToString();
                         document.LinkDocument = reader["linkdocument"].ToString();
-                        document.Subject_ID = Convert.ToInt32(reader["subject_id"]);
+                        document.Subject_ID = reader["subject_id"] is DBNull ? (int?)null : Convert.ToInt32(reader["subject_id"]);
 
                         conn.Close();
                         return View(document);
@@ -266,6 +244,162 @@ namespace WebQuanLyAppOnTap.Controllers
                 catch (Exception ex)
                 {
                     // Handle exceptions
+                    return View("Error");
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditDocument(Document document, HttpPostedFileBase file)
+        {
+            if (ModelState.IsValid)
+            {
+                ConnectionMySQL connection = new ConnectionMySQL();
+                MySqlConnection conn = connection.ConnectionSQL();
+
+                try
+                {
+                    conn.Open();
+
+                    // Kiểm tra nếu có file mới được chọn
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        // Nếu có, lưu file mới và cập nhật đường dẫn
+                        string filePath = @"D:\flutterapp\appvscode\app_ontapkienthuc\assets\pdf\" + file.FileName;
+                        file.SaveAs(filePath);
+                        document.LinkDocument = "assets/pdf/" + file.FileName;
+                    }
+                    else
+                    {
+                        // Nếu không có file mới được chọn, giữ nguyên đường dẫn cũ
+                        document.LinkDocument = document.LinkDocument;
+                    }
+
+                    document.DateUpload = DateTime.Now;
+
+                    string updateQuerry = "UPDATE documents SET namedocument = @namedoc, linkdocument = @linkdoc, dateupload = @dateUpload WHERE id = @documentId";
+                    MySqlCommand updateCmd = new MySqlCommand(updateQuerry, conn);
+
+                    updateCmd.Parameters.AddWithValue("@namedoc", document.NameDocument);
+                    updateCmd.Parameters.AddWithValue("@linkdoc", document.LinkDocument);
+                    updateCmd.Parameters.AddWithValue("@dateupload", document.DateUpload);
+                    updateCmd.Parameters.AddWithValue("@documentId", document.Id);
+
+                    updateCmd.ExecuteNonQuery();
+
+                    return RedirectToAction("Index", "Documents");
+                }
+                catch (Exception ex)
+                {
+                    return View("Error");
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+
+            List<Subject> subjects = GetSubjectsFromDatabase();
+
+            List<SelectListItem> subjectListItems = subjects.Select(s => new SelectListItem
+            {
+                Value = s.Id.ToString(),
+                Text = s.NameSubject
+            }).ToList();
+
+            ViewBag.Subjects = subjectListItems;
+
+            return View(document);
+        }
+
+        public ActionResult DeleteDocument(int documentId)
+        {
+            if (Session["fullname"] == null)
+            {
+                return RedirectToAction("Login", "Users");
+            }
+            else
+            {
+                ConnectionMySQL connection = new ConnectionMySQL();
+                string query = "SELECT u.id, u.namedocument, u.linkdocument, u.dateupload, t.namesubject " +
+               "FROM documents u " +
+               "LEFT JOIN subjects t ON u.subject_id = t.id " +
+               "WHERE u.id = @documentId";
+
+                MySqlConnection conn = connection.ConnectionSQL();
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+
+                cmd.Parameters.AddWithValue("@documentId", documentId);
+
+                try
+                {
+                    conn.Open();
+                    var reader = cmd.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        Document document = new Document();
+                        document.Id = Convert.ToInt32(reader["id"]);
+                        document.NameDocument = reader["namedocument"].ToString();
+                        document.LinkDocument = reader["linkdocument"].ToString();
+                        document.DateUpload = reader.GetDateTime(reader.GetOrdinal("dateupload"));
+                        document.NameSubject = reader["namesubject"].ToString();
+                        conn.Close();
+                        return View(document);
+                    }
+                    else
+                    {
+                        conn.Close();
+                        return View("Error");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return View("Error");
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
+
+        public ActionResult DeleteConfirmed(int documentId)
+        {
+            if (Session["fullname"] == null)
+            {
+                return RedirectToAction("Login", "Users");
+            }
+            else
+            {
+                ConnectionMySQL connection = new ConnectionMySQL();
+                string query = "DELETE FROM documents WHERE id = @documentId";
+                MySqlConnection conn = connection.ConnectionSQL();
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+
+                cmd.Parameters.AddWithValue("@documentId", documentId);
+
+                try
+                {
+                    conn.Open();
+                    int rowsAffected = cmd.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        return RedirectToAction("Index", "Documents");
+                    }
+                    else
+                    {
+                        return View("Error");
+                    }
+                }
+                catch (Exception ex)
+                {
                     return View("Error");
                 }
                 finally

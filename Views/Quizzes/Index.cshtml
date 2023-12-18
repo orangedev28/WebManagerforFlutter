@@ -46,7 +46,7 @@
                     @quiz.DateUpload
                 </td>
                 <td>
-                    @quiz.NameSubject
+                    @(quiz.NameSubject ?? "N/A")
                 </td>
                 <td>
                     <a class="edit-link" href="@Url.Action("EditQuiz", "Quizzes", new { quizId = quiz.Id })">Sửa Bài |</a>
@@ -56,5 +56,6 @@
         }
     </table>
 
+    <a class="edit-link" href="@Url.Action("CreateList", "Questions")"> Nhập danh sách câu hỏi cho bài kiểm tra</a>
 </section>
 

@@ -162,3 +162,8 @@ C:\Users\khang\OneDrive\Máy tính\WebQuanLyAppOnTap\bin\System.Security.Princip
 C:\Users\khang\OneDrive\Máy tính\WebQuanLyAppOnTap\bin\System.Text.Encoding.CodePages.xml
 C:\Users\khang\OneDrive\Máy tính\WebQuanLyAppOnTap\bin\System.Threading.Tasks.Extensions.xml
 C:\Users\khang\OneDrive\Máy tính\WebQuanLyAppOnTap\bin\System.ValueTuple.xml
+C:\Users\khang\OneDrive\Máy tính\WebQuanLyAppOnTap\bin\EPPlus.dll
+C:\Users\khang\OneDrive\Máy tính\WebQuanLyAppOnTap\bin\EPPlus.Interfaces.dll
+C:\Users\khang\OneDrive\Máy tính\WebQuanLyAppOnTap\bin\EPPlus.System.Drawing.dll
+C:\Users\khang\OneDrive\Máy tính\WebQuanLyAppOnTap\bin\System.ComponentModel.Annotations.dll
+C:\Users\khang\OneDrive\Máy tính\WebQuanLyAppOnTap\bin\EPPlus.xml

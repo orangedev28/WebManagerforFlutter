@@ -24,7 +24,7 @@ namespace WebQuanLyAppOnTap.Controllers
 
                 string query = "SELECT u.id, u.username, u.fullname, u.email, t.nametype " +
                    "FROM users u " +
-                   "INNER JOIN user_types t ON u.usertype_id = t.id";
+                   "LEFT JOIN user_types t ON u.usertype_id = t.id";
 
                 MySqlConnection conn = connection.ConnectionSQL();
                 MySqlCommand cmd = new MySqlCommand(query, conn);
@@ -52,7 +52,6 @@ namespace WebQuanLyAppOnTap.Controllers
                 }
                 catch (Exception ex)
                 {
-                    // Handle exceptions
                     return View("Error");
                 }
                 finally
@@ -116,7 +115,7 @@ namespace WebQuanLyAppOnTap.Controllers
 
         }
 
-        // Kiểm tra Username hợp lệ ( chưa tồn tại trong db)
+        // Kiểm tra Username hợp lệ (chưa tồn tại trong db)
         private bool IsUsernameValid(string username, int userId)
         {
             ConnectionMySQL connection = new ConnectionMySQL();
@@ -134,6 +133,25 @@ namespace WebQuanLyAppOnTap.Controllers
             conn.Close();
 
             return count == 0; // Nếu count = 0, username hợp lệ
+        }
+
+        private bool IsEmailNotExists(string email, int userId)
+        {
+            ConnectionMySQL connection = new ConnectionMySQL();
+
+            string query = "SELECT COUNT(*) FROM users WHERE email = @email AND id != @userId";
+
+            MySqlConnection conn = connection.ConnectionSQL();
+            MySqlCommand cmd = new MySqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("@email", email);
+            cmd.Parameters.AddWithValue("@userId", userId);
+
+            conn.Open();
+            int count = Convert.ToInt32(cmd.ExecuteScalar());
+            conn.Close();
+
+            return count == 0;
         }
 
         // Kiểm tra Email hợp lệ (định dạng)
@@ -158,7 +176,7 @@ namespace WebQuanLyAppOnTap.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (IsUsernameValid(user.Username, user.Id) && IsEmailValid(user.Email))
+                    if (IsUsernameValid(user.Username, user.Id) && IsEmailValid(user.Email) && IsEmailNotExists(user.Email, user.Id))
                     {
                         ConnectionMySQL connection = new ConnectionMySQL();
 
@@ -186,13 +204,13 @@ namespace WebQuanLyAppOnTap.Controllers
                             }
                             else
                             {
-                                ViewData["Error"] = "Không thể cập nhật thông tin người dùng.";
+                                ViewData["Error"] = "Không thể cập nhật thông tin người dùng!";
                                 return View(user);
                             }
                         }
                         catch (Exception ex)
                         {
-                            ViewData["Error"] = "Đã xảy ra lỗi trong quá trình cập nhật thông tin người dùng.";
+                            ViewData["Error"] = "Đã xảy ra lỗi trong quá trình cập nhật thông tin người dùng!";
                             return View(user);
                         }
                         finally
@@ -202,20 +220,20 @@ namespace WebQuanLyAppOnTap.Controllers
                     }
                     else
                     {
-                        ViewData["Error"] = "Tên người dùng đã tồn tại hoặc Email không hợp lệ.";
+                        ViewData["Error"] = "Tên người dùng hoặc Email đã tồn tại hay Email không đúng định dạng!";
                         return View(user);
                     }
                 }
                 else
                 {
-                    ViewData["Error"] = "Dữ liệu không hợp lệ.";
+                    ViewData["Error"] = "Dữ liệu không hợp lệ!";
                     return View(user);
                 }
             }
             else
             {
                 // Nếu usertype_id không phải 1, không cho phép chỉnh sửa thông tin
-                ViewData["Error"] = "Không có quyền chỉnh sửa thông tin người dùng.";
+                ViewData["Error"] = "Không có quyền chỉnh sửa thông tin người dùng!";
                 return View("Error");
             }
         }
@@ -228,21 +246,10 @@ namespace WebQuanLyAppOnTap.Controllers
             }
             else
             {
-                bool userHasScore = CheckIfUserHasScore(userId);
-
-                if (userHasScore)
-                {
-                    ViewBag.HasScore = true;
-                }
-                else
-                {
-                    ViewBag.HasScore = false;
-                }
-
                 ConnectionMySQL connection = new ConnectionMySQL();
                 string query = "SELECT u.id, u.username, u.fullname, u.email, t.nametype " +
                                "FROM users u " +
-                               "INNER JOIN user_types t ON u.usertype_id = t.id " + // Đã thêm khoảng trắng ở đây
+                               "LEFT JOIN user_types t ON u.usertype_id = t.id " + // Đã thêm khoảng trắng ở đây
                                "WHERE u.id = @userId";
 
                 MySqlConnection conn = connection.ConnectionSQL();
@@ -282,24 +289,6 @@ namespace WebQuanLyAppOnTap.Controllers
                     conn.Close();
                 }
             }
-        }
-
-        // Kiểm tra nếu người dùng đã được lưu điểm trong db thì không được phép xóa
-        private bool CheckIfUserHasScore(int userId)
-        {
-            ConnectionMySQL connection = new ConnectionMySQL();
-            string query = "SELECT COUNT(*) FROM score WHERE user_id = @userId";
-
-            MySqlConnection conn = connection.ConnectionSQL();
-            MySqlCommand cmd = new MySqlCommand(query, conn);
-
-            cmd.Parameters.AddWithValue("@userId", userId);
-
-            conn.Open();
-            int count = Convert.ToInt32(cmd.ExecuteScalar());
-            conn.Close();
-
-            return count > 0;
         }
 
         [HttpPost]
@@ -363,7 +352,7 @@ namespace WebQuanLyAppOnTap.Controllers
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
-                ViewData["Error"] = "Vui lòng nhập tên đăng nhập và mật khẩu.";
+                ViewData["Error"] = "Vui lòng nhập tên đăng nhập và mật khẩu!";
                 return View();
             }
 
@@ -412,7 +401,7 @@ namespace WebQuanLyAppOnTap.Controllers
                 }
                 else
                 {
-                    ViewData["Error"] = "Tên đăng nhập hoặc mật khẩu không đúng.";
+                    ViewData["Error"] = "Tên đăng nhập hoặc mật khẩu không đúng!";
                     conn.Close();
                     return View();
                 }
@@ -420,7 +409,7 @@ namespace WebQuanLyAppOnTap.Controllers
             else
             {
                 // Username not found
-                ViewData["Error"] = "Tên đăng nhập hoặc mật khẩu không đúng.";
+                ViewData["Error"] = "Tên đăng nhập hoặc mật khẩu không đúng!";
                 conn.Close();
                 return View();
             }
@@ -452,7 +441,7 @@ namespace WebQuanLyAppOnTap.Controllers
             }
             catch (Exception ex)
             {
-                // Xử lý ngoại lệ (nếu cần)
+
             }
 
             if (!string.IsNullOrEmpty(imageUrl))

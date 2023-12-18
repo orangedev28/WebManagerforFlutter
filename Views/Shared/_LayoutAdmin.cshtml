@@ -5,7 +5,38 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@ViewBag.Title</title>
-    <link rel='shortcut icon' href='~/Content/images/gg-circle.png' />
+    <link rel='shortcut icon' href='~/Content/images/hutechlogo.png' />
+
+    <style>
+        .nav-item p {
+            color: black;
+        }
+
+        .collapsed .main-sidebar {
+            width: 50px; /* hoặc bất kỳ kích thước nào bạn muốn khi thu nhỏ */
+        }
+
+        .expanded .main-sidebar {
+            width: 250px; /* hoặc bất kỳ kích thước nào bạn muốn khi mở rộng */
+        }
+
+        .main-sidebar {
+            transition: width 0.3s ease;
+            overflow: hidden;
+        }
+
+        .ui-draggable-handle {
+            cursor: pointer;
+        }
+
+        .collapsed .content-wrapper {
+            margin-left: 50px; /* điều chỉnh theo kích thước thu nhỏ */
+        }
+
+        .expanded .content-wrapper {
+            margin-left: 250px; /* điều chỉnh theo kích thước mở rộng */
+        }
+    </style>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -48,11 +79,6 @@
                         <img src="~/Content/images/full_screen.png" alt="iconf" />
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#" role="button">
-                        <img src="~/Content/images/menu.png" alt="icon" />
-                    </a>
-                </li>
             </ul>
         </nav>
         <!-- /.navbar -->
@@ -60,7 +86,7 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4 " style="background-color: white">
             <!-- Brand Logo -->
             <a href="@Url.Action("Index","Admin")" class="brand-link background_menu" style="background-color: blanchedalmond">
-                <img src="~/Content/images/environment (1).png" alt="Admin" class="brand-image img-circle elevation-3" style="opacity: .8">
+                <img src="~/Content/images/lk.jpg" alt="Admin" class="brand-image img-circle elevation-3" style="opacity: .8">
                 <span class="brand-text font-weight-light" style="color: black; font-size:22px;">LK Website Admin</span>
             </a>
 
@@ -114,7 +140,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href="@Url.Action("Index","Questions")" class="nav-link">
+                            <a href="@Url.Action("Index","Score")" class="nav-link">
                                 <i class="nav-icon fas fa-edit"></i>
                                 <p>
                                     Điểm
@@ -126,20 +152,22 @@
                             <a href="@Url.Action("Index","Documents")" class="nav-link">
                                 <i class="nav-icon fas fa-edit"></i>
                                 <p>
-                                    Tài liệu
+                                    Tài liệu PDF
                                 </p>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="@Url.Action("Index","Questions")" class="nav-link">
+                            <a href="@Url.Action("Index","Videos")" class="nav-link">
                                 <i class="nav-icon fas fa-edit"></i>
                                 <p>
-                                    Video
+                                    Video bài giảng
                                 </p>
                             </a>
                         </li>
-
+                        <br />
+                        <button style="margin-top: 10px; font-size: 16px;" id="toggleButton">Thu nhỏ</button>
+                        <!--
                         <li class="nav-item">
                             <a href="@Url.Action("Index","Posts")" class="nav-link">
                                 <i class="nav-icon fas fa-edit"></i>
@@ -148,15 +176,7 @@
                                 </p>
                             </a>
                         </li>
-
-                        <li class="nav-item">
-                            <a href="@Url.Action("Index","Contacts")" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>
-                                    Liên hệ
-                                </p>
-                            </a>
-                        </li>
+                            -->
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
@@ -176,16 +196,45 @@
         <footer class="main-footer">
             <strong>&copy; Thiết kể bởi LK Family.</strong>
             <div class="float-right d-none d-sm-inline-block">
-                <b>Version</b> 4.0.0
+                <b>Version</b> 2.0.0
             </div>
         </footer>
     </div>
 
-    <style>
-        .nav-item p {
-            color: black;
-        }
-    </style>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#toggleButton').click(function () {
+                $('body').toggleClass('collapsed');
+                adjustContentWidth(); // Thêm dòng này để điều chỉnh kích thước nội dung
+            });
+
+            // Kích thước khởi tạo của thanh sidebar (thu nhỏ)
+            var initialWidth = 50;
+
+            $('.main-sidebar').draggable({
+                axis: 'x', // Chỉ di chuyển theo chiều ngang
+                containment: [initialWidth, 0, window.innerWidth, window.innerHeight],
+                drag: function (event, ui) {
+                    var contentWidth = $(window).width() - ui.position.left;
+                    $('.content-wrapper').css('margin-left', ui.position.left);
+                },
+                stop: function (event, ui) {
+                    // Lưu giá trị của thanh sidebar sau khi dừng kéo
+                    initialWidth = ui.position.left;
+                }
+            });
+
+            // Thêm hàm để điều chỉnh kích thước nội dung
+            function adjustContentWidth() {
+                var contentWidth = $('body').hasClass('collapsed') ? 50 : 250;
+                $('.content-wrapper').css('margin-left', contentWidth);
+            }
+        });
+    </script>
 
     <!-- ./wrapper -->
     <!-- jQuery -->
